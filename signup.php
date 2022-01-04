@@ -41,6 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $signup->signupUser();
 
+    $usernameErr = $signup->usernameErr;
+    $passwordErr = $signup->passwordErr;
+    $cpasswordErr = $signup->cpasswordErr;
+
     // if (empty($_POST["username"])) {
     //     $usernameErr = "Username is required";
     // } else if (!preg_match("/^[a-zA-Z-' ]*$/", $_POST["username"])) {

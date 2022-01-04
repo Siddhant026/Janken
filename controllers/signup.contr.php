@@ -7,6 +7,10 @@ class SignupContr extends SignupModel
     private $password;
     private $cpassword;
 
+    public $usernameErr;
+    public $passwordErr;
+    public $cpasswordErr;
+
     public function __construct($username, $password, $cpassword)
     {
         $this->username = $username;
@@ -14,8 +18,12 @@ class SignupContr extends SignupModel
         $this->cpassword = $cpassword;
     }
 
-    public function signupUser() {
-        if($this->__validateUsername() && $this->__validatePassword()){
+    public function signupUser()
+    {
+        if ($this->__validateUsername() && $this->__validatePassword()) {
+            $this->usernameErr = "";
+            $this->passwordErr = "";
+            $this->cpasswordErr = "";
             $this->setUser($this->username, $this->password);
         }
     }
@@ -32,6 +40,7 @@ class SignupContr extends SignupModel
             //$username = test_input($_POST["username"]);
             //$usernameCorr = true;
             if ($this->userExists($this->username)) {
+                $this->usernameErr = "This username already Exists!";
                 return false;
             } else {
                 return true;
@@ -66,9 +75,11 @@ class SignupContr extends SignupModel
         } elseif (!empty($this->password)) {
             //$cpasswordErr = "Please Check You've Entered Or Confirmed Your Password!";
             //$passCorr = false;
+            $this->cpasswordErr = "Please Check You've Entered Or Confirmed Your Password!";
             return false;
         } else {
             //$passwordErr = "Please enter password   ";
+            $this->passwordErr = "Please enter password   ";
             $passCorr = false;
         }
         return $passCorr;
