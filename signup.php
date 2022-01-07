@@ -2,7 +2,6 @@
 
 include '/xampp/htdocs/janken/includes/auth.php';
 include '/xampp/htdocs/janken/includes/dbh.php';
-include '/xampp/htdocs/janken/models/signup.mod.php';
 include '/xampp/htdocs/janken/controllers/signup.contr.php';
 
 $usernameErr = $passwordErr = $cpasswordErr = "";

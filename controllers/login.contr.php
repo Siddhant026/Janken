@@ -1,10 +1,13 @@
 <?php
 
-class LoginContr extends LoginModel
+include '/xampp/htdocs/janken/models/user.mod.php';
+
+class LoginContr
 {
 
     private $username;
     private $password;
+    private $userModel;
 
     public $usernameErr;
     public $passwordErr;
@@ -13,6 +16,7 @@ class LoginContr extends LoginModel
     {
         $this->username = $username;
         $this->password = $password;
+        $this->userModel = new User();
     }
 
     public function loginUser()
@@ -21,7 +25,20 @@ class LoginContr extends LoginModel
             $this->usernameErr = "";
             $this->passwordErr = "";
             $this->cpasswordErr = "";
-            $this->getUser($this->username, $this->password);
+            $result = $this->userModel->getUser($this->username);
+            if ($result != false) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    if (password_verify($this->password, $row['password'])) {
+                        //$login = true;
+                        session_start();
+                        $_SESSION['loggedin'] = true;
+                        $_SESSION['username'] = $this->username;
+                        $_SESSION['uid'] = $row['uid'];
+                        $_SESSION['time'] = time();
+                        header("location: game.php");
+                    }
+                }
+            }
         }
     }
 

@@ -2,9 +2,8 @@
 
 include '/xampp/htdocs/janken/includes/auth.php';
 include '/xampp/htdocs/janken/includes/dbh.php';
-include '/xampp/htdocs/janken/models/login.mod.php';
 include '/xampp/htdocs/janken/controllers/login.contr.php';
-
+ 
 $usernameErr = $passwordErr = "";
 $username = $password = "";
 

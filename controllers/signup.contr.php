@@ -1,11 +1,18 @@
 <?php
 
-class SignupContr extends SignupModel
+include '/xampp/htdocs/janken/models/user.mod.php';
+include '/xampp/htdocs/janken/models/leaderboard.mod.php';
+include '/xampp/htdocs/janken/models/choices.mod.php';
+
+class SignupContr
 {
 
     private $username;
     private $password;
     private $cpassword;
+    private $userModel;
+    private $leaderboardModel;
+    private $choicesModel;
 
     public $usernameErr;
     public $passwordErr;
@@ -16,6 +23,9 @@ class SignupContr extends SignupModel
         $this->username = $username;
         $this->password = $password;
         $this->cpassword = $cpassword;
+        $this->userModel = new User();
+        $this->leaderboardModel = new Leaderboard();
+        $this->choicesModel = new Choices();
     }
 
     public function signupUser()
@@ -24,7 +34,33 @@ class SignupContr extends SignupModel
             $this->usernameErr = "";
             $this->passwordErr = "";
             $this->cpasswordErr = "";
-            $this->setUser($this->username, $this->password);
+            $result = $this->userModel->setUser($this->username, $this->password);
+            if ($result != false) {
+                $result = $this->userModel->getUser($this->username);
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $_SESSION['loggedin'] = true;
+                    $_SESSION['username'] = $this->username;
+                    $_SESSION['uid'] = $row['uid'];
+                    $_SESSION['time'] = time();
+                    $this->leaderboardModel->setUser($_SESSION['uid']);
+                    $this->choicesModel->setUser($_SESSION['uid']);
+                    header("location: game.php");
+                }
+            }
+            // user model (add row)
+            // leaderboard model (row add)
+            // choices model (row add)
+        }
+    }
+
+    private function __userExists()
+    {
+
+        $result = $this->userModel->getUser($this->username);
+        if ($result == false) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -39,7 +75,7 @@ class SignupContr extends SignupModel
         } else {
             //$username = test_input($_POST["username"]);
             //$usernameCorr = true;
-            if ($this->userExists($this->username)) {
+            if ($this->__userExists()) {
                 $this->usernameErr = "This username already Exists!";
                 return false;
             } else {
@@ -47,6 +83,8 @@ class SignupContr extends SignupModel
             }
         }
     }
+
+
 
     private function __validatePassword()
     {
